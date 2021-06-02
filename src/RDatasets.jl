@@ -3,7 +3,7 @@ module RDatasets
         @eval Base.Experimental.@optlevel 1
     end
 
-    using Reexport, RData, CSV, CodecZlib
+    using Reexport, FileIO, CSV, CodecZlib
     @reexport using DataFrames
 
     export dataset

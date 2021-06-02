@@ -9,7 +9,13 @@ function dataset(package_name::AbstractString, dataset_name::AbstractString)
 
     rdaname = joinpath(basename, string(dataset_name, ".rda"))
     if isfile(rdaname)
-        return load(rdaname)[dataset_name]
+        if isdefined(FileIO, :action)
+            # FileIO >= 1.6
+            return load(File{format"RData"}(rdaname))[dataset_name]
+        else
+            # FileIO < 1.6
+            return load(File(format"RData", rdaname))[dataset_name]
+        end
     end
 
     csvname = joinpath(basename, string(dataset_name, ".csv.gz"))
