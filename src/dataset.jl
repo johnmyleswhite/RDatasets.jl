@@ -22,3 +22,19 @@ function dataset(package_name::AbstractString, dataset_name::AbstractString)
     end
     error("Unable to locate dataset file $rdaname or $csvname")
 end
+
+struct RDatasetsDescription
+    content::String
+end
+function description(package_name::AbstractString, dataset_name::AbstractString)
+    RDatasetsDescription(read(joinpath(@__DIR__, "..", "doc",
+                                       package_name, "$dataset_name.html"), String))
+end
+function Base.show(io::IO, mime::MIME"text/plain", d::RDatasetsDescription)
+    nohtml = replace(d.content, Regex("<[^>]*>") => "")
+    s = replace(nohtml, Regex("\n\n+") => "\n\n")
+    show(io, mime, Docs.Text(s))
+end
+function Base.show(io::IO, mime::MIME"text/html", d::RDatasetsDescription)
+    show(io, mime, HTML(d.content))
+end
